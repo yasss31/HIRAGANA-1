@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Belajar Hiragana (あ - そ)</title>
+  <!-- Tailwind CSS untuk reka bentuk visual yang moden dan responsif -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons untuk ikon UI yang bersih -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Kosugi+Maru&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+    
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .japanese-text {
+      font-family: 'Kosugi Maru', sans-serif;
+    }
+    .canvas-grid {
+      background-image: linear-gradient(to right, #e2e8f0 1px, transparent 1px),
+                        linear-gradient(to bottom, #e2e8f0 1px, transparent 1px);
+      background-size: 50% 50%;
+      background-position: center;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800 flex flex-col pb-12">
+
+  <!-- Navigasi Atas / Pengepala -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+    <div class="max-w-5xl mx-auto px-4 py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="bg-rose-500 text-white p-2.5 rounded-2xl shadow-md shadow-rose-200">
+          <span class="japanese-text font-bold text-2xl">あ</span>
+        </div>
+        <div>
+          <h1 class="font-bold text-xl tracking-tight text-slate-900">Hiragana Dekisugi!</h1>
+          <p class="text-xs text-slate-500 font-medium">Latihan Hiragana Deretan A, KA, & SA (あ ~ そ)</p>
+        </div>
+      </div>
+      
+      <!-- Menu Tab -->
+      <nav class="flex bg-slate-100 p-1.5 rounded-2xl gap-1 w-full sm:w-auto">
+        <button onclick="switchTab('cards')" id="tab-cards" class="tab-btn flex-1 sm:flex-initial flex items-center justify-center gap-1 px-4 py-2 text-sm font-semibold rounded-xl transition duration-200 bg-white text-slate-900 shadow-sm">
+          <i data-lucide="book-open" class="w-4 h-4"></i> Kad Imbas
+        </button>
+        <button onclick="switchTab('chart')" id="tab-chart" class="tab-btn flex-1 sm:flex-initial flex items-center justify-center gap-1 px-4 py-2 text-sm font-semibold rounded-xl transition duration-200 text-slate-600 hover:text-slate-900">
+          <i data-lucide="grid" class="w-4 h-4"></i> Carta Bunyi
+        </button>
+        <button onclick="switchTab('practice')" id="tab-practice" class="tab-btn flex-1 sm:flex-initial flex items-center justify-center gap-1 px-4 py-2 text-sm font-semibold rounded-xl transition duration-200 text-slate-600 hover:text-slate-900">
+          <i data-lucide="pen-tool" class="w-4 h-4"></i> Latihan Melukis
+        </button>
+        <button onclick="switchTab('quiz')" id="tab-quiz" class="tab-btn flex-1 sm:flex-initial flex items-center justify-center gap-1 px-4 py-2 text-sm font-semibold rounded-xl transition duration-200 text-slate-600 hover:text-slate-900">
+          <i data-lucide="award" class="w-4 h-4"></i> Kuiz Minda
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Kandungan Utama -->
+  <main class="max-w-5xl mx-auto px-4 py-8 flex-1 w-full">
+    
+    <!-- TAB 1: KAD IMBAS (FLASHCARDS) -->
+    <section id="section-cards" class="tab-content block">
+      <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6">
+        <div>
+          <h2 class="text-2xl font-bold text-slate-900">Koleksi Kad Imbas Belajar (46 Kata)</h2>
+          <p class="text-sm text-slate-500">Kombinasi perkataan hanya menggunakan huruf あいうえお, かきくけこ, dan さしすせそ.</p>
+        </div>
+        <div class="flex gap-2 w-full md:w-auto">
+          <button onclick="toggleRomaji()" id="btn-romaji" class="flex-1 md:flex-initial flex items-center justify-center gap-2 px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-medium hover:bg-slate-50 active:scale-95 transition">
+            <i data-lucide="eye" class="w-4 h-4"></i> Tunjuk Romaji
+          </button>
+          <button onclick="togglePlayAll()" class="flex-1 md:flex-initial flex items-center justify-center gap-2 px-4 py-2.5 bg-rose-500 hover:bg-rose-600 text-white rounded-xl text-sm font-semibold active:scale-95 transition shadow-lg shadow-rose-100">
+            <i data-lucide="volume-2" class="w-4 h-4"></i> Sebut Semua
+          </button>
+        </div>
+      </div>
+
+      <!-- Grid Kad-Kad Hiragana -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="flashcards-grid">
+        <!-- Kad akan dijana secara dinamik melalui JS -->
+      </div>
+    </section>
+
+    <!-- TAB 2: CARTA INTERAKTIF -->
+    <section id="section-chart" class="tab-content hidden">
+      <div class="mb-8 text-center max-w-2xl mx-auto">
+        <h2 class="text-2xl font-bold text-slate-900 mb-2">Carta Bunyi Hiragana (あ - そ)</h2>
+        <p class="text-sm text-slate-500">Klik pada mana-mana huruf untuk mendengar sebutan bunyi yang betul secara langsung!</p>
+      </div>
+
+      <div class="max-w-xl mx-auto bg-white border border-slate-200 rounded-3xl p-6 shadow-sm">
+        <div class="grid grid-cols-5 gap-4">
+          <!-- Header Baris Huruf Vokal -->
+          <div class="col-span-5 grid grid-cols-5 text-center font-bold text-slate-400 text-xs tracking-wider uppercase mb-2">
+            <div>A</div>
+            <div>I</div>
+            <div>U</div>
+            <div>E</div>
+            <div>O</div>
+          </div>
+
+          <!-- Baris A (あいうえお) -->
+          <button onclick="speakText('あ')" class="flex flex-col items-center justify-center p-4 bg-rose-50/50 hover:bg-rose-100/60 border border-rose-100 rounded-2xl group transition duration-200 active:scale-95">
+            <span class="japanese-text text-3xl font-bold text-rose-600 group-hover:scale-110 transition">あ</span>
+            <span class="text-xs font-semibold text-slate-400 mt-1">a</span>
+          </button>
+          <button onclick="speakText('い')" class="flex flex-col items-center justify-center p-4 bg-rose-50/50 hover:bg-rose-100/60 border border-rose-100 rounded-2xl group transition duration-200 active:scale-95">
+            <span class="japanese-text text-3xl font-bold text-rose-600 group-hover:scale-110 transition">い</span>
+            <span class="text-xs font-semibold text-slate-400 mt-1">i</span>
+          </button>
+          <button onclick="speakText('う')" class="flex flex-col items-center justify-center p-4 bg-rose-50/50 hover:bg-rose-100/60 border border-rose-100 rounded-2xl group transition duration-200 active:scale-95">
+            <span class="japanese-text text-3xl font-bold text-rose-600 group-hover:scale-110 transition">う</span>
+            <span class="text-xs font-semibold text-slate-400 mt-1">u</span>
+          </button>
+          <button onclick="speakText('え')" class="flex flex-col items-center justify-center p-4 bg-rose-50/50 hover:bg-rose-100/60 border border-rose-100 rounded-2xl group transition duration-200 active:scale-95">
+            <span class="japanese-text text-3xl font-bold text-rose-600 group-hover:scale-110 transition">え</span>
+            <span class="text-xs font-semibold text-slate-400 mt-1">e</span>
+          </button>
+          <button onclick="speakText('お')" class="flex flex-col items-center justify-center p-4 bg-rose-50/50 hover:bg-rose-100/60 border border-rose-100 rounded-2xl group transition duration-200 active:scale-95">
+            <span class="japanese-text text-3xl font-bold text-rose-600 group-hover:scale-110 transition">お</span>
+            <span class="text-xs font-semibold text-slate-400 mt-1">o</span>
+          </button>
+
+          <!-- Baris KA (かきくけこ) -->
+          <button onclick="speakText('か')" class="flex flex-col items-center justify-center p-4 bg-sky-50/50 hover:bg-sky-100/60 border border-sky-100 rounded-2xl group transition duration-200 active:scale-95">
+            <span class="japanese-text text-3xl font-bold text-sky-600 group-hover:scale-110 transition">か</span>
+            <span class="text-xs font-semibold text-slate-400 mt-1">ka</span>
+          </button>
+          <button onclick="speakText('き')" class="flex flex-col items-center justify-center p-4 bg-sky-50/50 hover:bg-sky-100/60 border border-sky-100 rounded-2xl group transition duration-200 active:scale-95">
+            <span class="japanese-text text-3xl font-bold text-sky-600 group-hover:scale-110 transition">き</span>
+            <span class="text-xs font-semibold text-slate-400 mt-1">ki</span>
+          </button>
+          <button onclick="speakText('く')" class="flex flex-col items-center justify-center p-4 bg-sky-50/50 hover:bg-sky-100/60 border border-sky-100 rounded-2xl group transition duration-200 active:scale-95">
+            <span class="japanese-text text-3xl font-bold text-sky-600 group-hover:scale-110 transition">く</span>
+            <span class="text-xs font-semibold text-slate-400 mt-1">ku</span>
+          </button>
+          <button onclick="speakText('け')" class="flex flex-col items-center justify-center p-4 bg-sky-50/50 hover:bg-sky-100/60 border border-sky-100 rounded-2xl group transition duration-200 active:scale-95">
+            <span class="japanese-text text-3xl font-bold text-sky-600 group-hover:scale-110 transition">け</span>
+            <span class="text-xs font-semibold text-slate-400 mt-1">ke</span>
+          </button>
+          <button onclick="speakText('こ')" class="flex flex-col items-center justify-center p-4 bg-sky-50/50 hover:bg-sky-100/60 border border-sky-100 rounded-2xl group transition duration-200 active:scale-95">
+            <span class="japanese-text text-3xl font-bold text-sky-600 group-hover:scale-110 transition">こ</span>
+            <span class="text-xs font-semibold text-slate-400 mt-1">ko</span>
+          </button>
+
+          <!-- Baris SA (さしすせそ) -->
+          <button onclick="speakText('さ')" class="flex flex-col items-center justify-center p-4 bg-emerald-50/50 hover:bg-emerald-100/60 border border-emerald-100 rounded-2xl group transition duration-200 active:scale-95">
+            <span class="japanese-text text-3xl font-bold text-emerald-600 group-hover:scale-110 transition">さ</span>
+            <span class="text-xs font-semibold text-slate-400 mt-1">sa</span>
+          </button>
+          <button onclick="speakText('し')" class="flex flex-col items-center justify-center p-4 bg-emerald-50/50 hover:bg-emerald-100/60 border border-emerald-100 rounded-2xl group transition duration-200 active:scale-95">
+            <span class="japanese-text text-3xl font-bold text-emerald-600 group-hover:scale-110 transition">し</span>
+            <span class="text-xs font-semibold text-slate-400 mt-1">shi</span>
+          </button>
+          <button onclick="speakText('す')" class="flex flex-col items-center justify-center p-4 bg-emerald-50/50 hover:bg-emerald-100/60 border border-emerald-100 rounded-2xl group transition duration-200 active:scale-95">
+            <span class="japanese-text text-3xl font-bold text-emerald-600 group-hover:scale-110 transition">す</span>
+            <span class="text-xs font-semibold text-slate-400 mt-1">su</span>
+          </button>
+          <button onclick="speakText('せ')" class="flex flex-col items-center justify-center p-4 bg-emerald-50/50 hover:bg-emerald-100/60 border border-emerald-100 rounded-2xl group transition duration-200 active:scale-95">
+            <span class="japanese-text text-3xl font-bold text-emerald-600 group-hover:scale-110 transition">せ</span>
+            <span class="text-xs font-semibold text-slate-400 mt-1">se</span>
+          </button>
+          <button onclick="speakText('そ')" class="flex flex-col items-center justify-center p-4 bg-emerald-50/50 hover:bg-emerald-100/60 border border-emerald-100 rounded-2xl group transition duration-200 active:scale-95">
+            <span class="japanese-text text-3xl font-bold text-emerald-600 group-hover:scale-110 transition">そ</span>
+            <span class="text-xs font-semibold text-slate-400 mt-1">so</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: LATIHAN MELUKIS (CANVAS) -->
+    <section id="section-practice" class="tab-content hidden">
+      <div class="mb-6">
+        <h2 class="text-2xl font-bold text-slate-900">Pad Lukisan Latihan Menulis</h2>
+        <p class="text-sm text-slate-500">Pilih huruf hiragana di sebelah kiri, kemudian lakarkan bentuk huruf tersebut di atas kawasan panduan kanvas.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Senarai Pilih Huruf -->
+        <div class="bg-white border border-slate-200 p-4 rounded-3xl h-[450px] overflow-y-auto">
+          <span class="text-xs font-bold text-slate-400 tracking-wider block mb-3 uppercase">Pilih Huruf:</span>
+          <div class="grid grid-cols-3 gap-2" id="practice-char-list">
+            <!-- Diisi secara dinamik -->
+          </div>
+        </div>
+
+        <!-- Kanvas Lakaran Utama -->
+        <div class="md:col-span-2 bg-white border border-slate-200 p-6 rounded-3xl flex flex-col items-center justify-center shadow-sm">
+          <div class="w-full flex items-center justify-between mb-4">
+            <span class="text-sm font-semibold text-slate-500 flex items-center gap-1">
+              Melakar Huruf: <span id="current-practice-char-label" class="japanese-text text-xl font-bold text-rose-500 ml-1">あ (a)</span>
+            </span>
+            <div class="flex gap-2">
+              <button onclick="speakText(currentPracticeChar)" class="p-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl transition active:scale-95" title="Sebut Bunyi">
+                <i data-lucide="volume-2" class="w-5 h-5"></i>
+              </button>
+              <button onclick="clearCanvas()" class="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition active:scale-95">
+                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Padam
+              </button>
+            </div>
+          </div>
+
+          <!-- Bekas Kanvas Berlatarbelakangkan Grid Gergasi -->
+          <div class="relative w-[280px] h-[280px] sm:w-[320px] sm:h-[320px] bg-slate-50 rounded-2xl border border-slate-200 canvas-grid overflow-hidden">
+            <!-- Bayangan Panduan Huruf di Belakang -->
+            <div id="canvas-guide-char" class="absolute inset-0 flex items-center justify-center text-[180px] sm:text-[220px] text-slate-200 select-none pointer-events-none japanese-text">
+              あ
+            </div>
+            <!-- Kanvas Lukisan Sebenar -->
+            <canvas id="writing-canvas" width="320" height="320" class="absolute top-0 left-0 w-full h-full cursor-crosshair touch-none"></canvas>
+          </div>
+          
+          <p class="text-xs text-slate-400 mt-4 text-center">Petua: Gunakan jari pada peranti skrin sentuh atau tetikus pada komputer untuk menulis di atas grid di atas.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: KUIZ MINDA -->
+    <section id="section-quiz" class="tab-content hidden">
+      <div class="max-w-2xl mx-auto">
+        <!-- Kuiz Belum Bermula / Skrin Pengenalan -->
+        <div id="quiz-start-screen" class="bg-white border border-slate-200 rounded-3xl p-8 text-center shadow-sm">
+          <div class="w-16 h-16 bg-rose-50 text-rose-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <i data-lucide="brain-circuit" class="w-8 h-8"></i>
+          </div>
+          <h3 class="text-xl font-bold text-slate-900 mb-2">Uji Minda Hiragana Anda</h3>
+          <p class="text-sm text-slate-500 mb-6 max-w-md mx-auto">Sedia untuk menguji sejauh mana anda mengingati makna perkataan dalam bentuk tulisan Hiragana (あ hingga そ)?</p>
+          <button onclick="startQuiz()" class="px-6 py-3 bg-rose-500 hover:bg-rose-600 text-white rounded-2xl text-sm font-semibold shadow-lg shadow-rose-100 transition duration-200 active:scale-95">
+            Mula Ujian Sekarang
+          </button>
+        </div>
+
+        <!-- Skrin Kuiz Berjalan -->
+        <div id="quiz-play-screen" class="hidden bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm">
+          <!-- Status Pusingan -->
+          <div class="flex items-center justify-between mb-6">
+            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Soalan <span id="quiz-question-num">1</span> / 10</span>
+            <span class="text-xs font-bold text-emerald-500 bg-emerald-50 px-2.5 py-1 rounded-full">Skor: <span id="quiz-score-val">0</span></span>
+          </div>
+
+          <!-- Kad Soalan -->
+          <div class="flex flex-col items-center justify-center p-6 bg-slate-50 rounded-2xl border border-slate-100 mb-6">
+            <div id="quiz-svg-container" class="w-32 h-32 mb-4 flex items-center justify-center">
+              <!-- SVG akan dipaparkan di sini -->
+            </div>
+            <div class="text-center">
+              <span class="text-xs text-slate-400 font-bold uppercase tracking-widest block mb-1">Apakah maksud perkataan ini?</span>
+              <h4 id="quiz-hiragana-word" class="japanese-text text-4xl font-extrabold text-slate-900 tracking-wide"></h4>
+              <span id="quiz-romaji-word" class="text-xs text-slate-400 font-medium tracking-wide mt-1 block"></span>
+            </div>
+          </div>
+
+          <!-- Pilihan Jawapan -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="quiz-options-grid">
+            <!-- Butang pilihan jawapan akan dijana di sini -->
+          </div>
+
+          <!-- Butang Seterusnya -->
+          <div class="mt-6 flex justify-end">
+            <button id="btn-next-question" disabled onclick="nextQuestion()" class="px-5 py-2.5 bg-slate-900 hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-xl text-sm font-semibold transition active:scale-95">
+              Seterusnya &rarr;
+            </button>
+          </div>
+        </div>
+
+        <!-- Skrin Tamat Kuiz -->
+        <div id="quiz-result-screen" class="hidden bg-white border border-slate-200 rounded-3xl p-8 text-center shadow-sm">
+          <div class="w-16 h-16 bg-amber-50 text-amber-500 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i data-lucide="trophy" class="w-8 h-8"></i>
+          </div>
+          <h3 class="text-2xl font-bold text-slate-900 mb-1">Tahniah! Anda Selesai</h3>
+          <p class="text-sm text-slate-500 mb-6">Berikut adalah pencapaian skor anda dalam kuiz kali ini:</p>
+          
+          <div class="inline-block bg-slate-50 border border-slate-100 px-6 py-4 rounded-2xl mb-8">
+            <span class="text-5xl font-extrabold text-slate-900" id="final-score-text">0</span>
+            <span class="text-slate-400 text-lg font-bold"> / 100</span>
+          </div>
+
+          <div class="flex gap-3 justify-center">
+            <button onclick="startQuiz()" class="px-5 py-2.5 bg-rose-500 hover:bg-rose-600 text-white rounded-xl text-sm font-semibold transition active:scale-95 shadow-md shadow-rose-100">
+              Cuba Lagi
+            </button>
+            <button onclick="switchTab('cards')" class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-sm font-semibold transition active:scale-95">
+              Kembali ke Kad Imbas
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Maklumat Kaki -->
+  <footer class="text-center text-slate-400 text-xs py-6 max-w-5xl mx-auto w-full border-t border-slate-100 mt-auto">
+    &copy; 2026 Hiragana Dekisugi • Belajar dengan gembira setiap hari.
+  </footer>
+
+  <!-- Script Logik Utama -->
+  <script>
+    // DATA KOSAKATA HIRAGANA (Menggunakan huruf dari A, KA, SA sahaja - Sebanyak 46 Kata!)
+    const vocabulary = [
+      {
+        indonesia: "Cinta",
+        hiragana: "あい",
+        romaji: "ai",
+        svg: `<svg viewBox="0 0 24 24" fill="currentColor" class="w-24 h-24 text-rose-500"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`
+      },
+      {
+        indonesia: "Wajah",
+        hiragana: "かお",
+        romaji: "kao",
+        svg: `<svg viewBox="0 0 100 100" class="w-24 h-24"><circle cx="50" cy="50" r="40" fill="#fed7aa"/><path d="M30 40a5 5 0 0 1 10 0M60 40a5 5 0 0 1 10 0" stroke="#7c2d12" stroke-width="3" stroke-linecap="round" fill="none"/><path d="M42 65q8 8 16 0" stroke="#7c2d12" stroke-width="3" stroke-linecap="round" fill="none"/><path d="M22 35c0-10 15-20 28-20s28 10 28 20c0 0-4 1-8-3s-12-8-20-4-15 15-20 15l-8-8z" fill="#1e293b"/></svg>`
+      },
+      {
+        indonesia: "Atas",
+        hiragana: "うえ",
+        romaji: "ue",
+        svg: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-24 h-24 text-blue-500"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>`
+      },
+      {
+        indonesia: "Biru",
+        hiragana: "あおい",
+        romaji: "aoi",
+        svg: `<svg viewBox="0 0 100 100" class="w-24 h-24"><rect x="25" y="25" width="50" height="50" rx="16" fill="#0284c7"/><circle cx="50" cy="50" r="12" fill="#38bdf8"/></svg>`
+      },
+      {
+        indonesia: "Merah",
+        hiragana: "あかい",
+        romaji: "akai",
+        svg: `<svg viewBox="0 0 100 100" class="w-24 h-24"><rect x="25" y="25" width="50" height="50" rx="16" fill="#dc2626"/><circle cx="50" cy="50" r="12" fill="#fca5a5"/></svg>`
+      },
+      {
+        indonesia: "Bertemu",
+        hiragana: "あう",
+        romaji: "au",
+        svg: `<svg viewBox="0 0 100 100" class="w-24 h-24"><circle cx="35" cy="40" r="12" fill="#a855f7"/><path d="M20 75c0-10 8-15 15-15s15 5 15 15" stroke="#a855f7" stroke-width="4" stroke-linecap="round" fill="none"/><circle cx="65" cy="40" r="12" fill="#ec4899"/><path d="M50 75c0-10 8-15 15-15s15 5 15 15" stroke="#ec4899" stroke-width="4" stroke-linecap="round" fill="none"/></svg>`
+      },
+      {
+        indonesia: "Keringat",
+        hiragana: "あせ",
+        romaji: "ase",
+        svg: `<svg viewBox="0 0 100 100" class="w-24 h-24"><circle cx="50" cy="55" r="30" fill="#cbd5e1"/><path d="M40 45q10 5 20 0" stroke="#475569" stroke-width="3" stroke-linecap="round" fill="none"/><path d="M68 30q-4 8 2 12t6-8" fill="#38bdf8"/><path d="M30 35q-3 6 1 9t5-6" fill="#38bdf8"/></svg>`
+      },
+      {
+        indonesia: "Kaki",
+        hiragana: "あし",
+        romaji: "ashi",
+        svg: `<svg viewBox="0 0 100 100" class="w-24 h-24"><path d="M50 20c-15 0-25 10-25 25 0 20 20 35 25 35s25-15 25-35c0-15-10-25-25-25z" fill="#f43f5e"/><circle cx="50" cy="12" r="6" fill="#f43f5e"/><circle cx="35" cy="16" r="5" fill="#f43f5e"/><circle cx="65" cy="16" r="5" fill="#f43f5e"/><circle cx="23" cy="25" r="4" fill="#f43f5e"/><circle cx="77" cy="25" r="4" fill="#f43f5e"/></svg>`
+      },
+      {
+        indonesia: "Pagi",
+        hiragana: "あさ",
+        romaji: "asa",
+        svg: `<svg viewBox="0 0 100 100" class="w-24 h-24"><circle cx="50" cy="50" r="22" fill="#f97316"/><path d="M10 70h80" stroke="#f97316" stroke-width="4" stroke-linecap="round"/><path d="M50 15v10M50 75v10M15 50h10M75 50h10" stroke="#f97316" stroke-width="4" stroke-linecap="round"/></svg>`
+      },
+      {
+        indonesia: "Payung",
+        hiragana: "かさ",
+        romaji: "kasa",
+        svg: `<svg viewBox="0 0 100 100" class="w-24 h-24"><path d="M50 15v65" stroke="#475569" stroke-width="4" stroke-linecap="round"/><path d="M50 80c3 0 5-2 5-5" stroke="#475569" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M15 55c0-20 15-35 35-35s35 15 35 35H15z" fill="#06b6d4"/></svg>`
+      },
+      {
+        indonesia: "Rusa",
+        hiragana: "しか",
+        romaji: "shika",
+        svg: `<svg viewBox="0 0 100 100" class="w-24 h-24"><path d="M35 25v-10h5M65 25v-10h-5" stroke="#78350f" stroke-width="4" stroke-linecap="round" fill="none"/><circle cx="50" cy="55" r="25" fill="#d97706"/><circle cx="42" cy="50" r="3" fill="#000"/><circle cx="58" cy="50" r="3" fill="#000"/><ellipse cx="50" cy="62" rx="5" ry="3" fill="#000"/></svg>`
+      },
+      {
+        indonesia: "Kursi",
+        hiragana: "いす",
+        romaji: "isu",
+        svg: `<svg viewBox="0 0 100 100" class="w-24 h-24"><path d="M35 25v30h30V25" stroke="#b45309" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M30 55h40M35 55v30M65 55v30" stroke="#b45309" stroke-width="5" stroke-linecap="round"/></svg>`
+      },
+      {
+        indonesia: "Sapi",
+        hiragana: "うし",
+        romaji: "ushi",
+        svg: `<svg viewBox="0 0 100 100" class="w-24 h-24"><rect x="25" y="30" width="50" height="45" rx="15" fill="#e5e5e5" stroke="#404040" stroke-width="3"/><path d="M20 25c5 5 10 0 10 0M80 25c-5 5-10 0-10 0" stroke="#404040" stroke-width="4" stroke-linecap="round" fill="none"/><ellipse cx="50" cy="60" rx="15" ry="10" fill="#fca5a5"/><circle cx="42" cy="45" r="4" fill="#000"/><circle cx="58" cy="45" r="4" fill="#000"/></svg>`
+      },
+      {
+        indonesia: "Batu",
+        hiragana: "いし",
+        romaji: "ishi",
+        svg: `<svg viewBox="0 0 100 100" class="w-24 h-24"><path d="M30 70c-5-2-10-10-10-15s12-15 22-10 12 15 10 20-17 7-22 5z" fill="#94a3b8"/><path d="M65 75c-10 0-18-5-15-15s15-12 22-5 5 15-7 20z" fill="#64748b"/></svg>`
+      },
+      {
+        indonesia: "Suara",
+        hiragana: "こえ",
+        romaji: "koe",
+        svg: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-24 h-24 text-violet-500"><path d="M11 5L6 9H2v6h4l5 4V5z"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>`
+      },
+      {
+        indonesia: "Sake (Alkohol)",
+        hiragana: "さけ",
+        romaji: "sake",
+        svg: `<svg viewBox="0 0 100 100" class="w-24 h-24"><path d="M40 25h20l-5 25h-10z" fill="#cbd5e1" stroke="#475569" stroke-width="3"/><path d="M35 50h30v35H35z" fill="#e2e8f0" stroke="#475569" stroke-width="3"/><rect x="42" y="58" width="16" height="18" rx="2" fill="#ef4444"/><text x="45" y="72" fill="#fff" font-size="12" font-weight="bold">酒</text></svg>`
+      },
+      {
+        indonesia: "Cumi-Cumi",
+        hiragana: "いか",
+        romaji: "ika",
+        svg: `<svg viewBox="0 0 100 100" class="w-24 h-24"><path d="M50 15 C35 15 35 45 35 55 L65 55 C65 45 65 15 50 15 Z" fill="#fda4af"/><path d="M35 55 L30 85 M42 55 L40 85 M50 55 L50 85 M58 55 L60 85 M65 55 L70 85" stroke="#f43f5e" stroke-width="4" stroke-linecap="round"/><circle cx="43" cy="35" r="3" fill="#000"/><circle cx="57" cy="35" r="3" fill="#000"/></svg>`
+      },
+      {
+        indonesia: "Musim Gugur",
+        hiragana: "あき",
+        romaji: "aki",
+        svg: `<svg viewBox="0 0 100 100" class="w-24 h-24"><path d="M50 15 L50 85" stroke="#78350f" stroke-width="3"/><path d="M50 30 C30 20 20 40 50 50 C80 40 70 20 50 30" fill="#ea580c"/><path d="M50 45 C35 35 30 55 50 65 C70 55 65 35 50 45" fill="#ca8a04"/></svg>`
+      },
+      {
+        indonesia: "Besok",
+        hiragana: "あす",
+        romaji: "asu",
+        svg: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-24 h-24 text-amber-500"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line><path d="M12 14l2 2 4-4"></path></svg>`
+      },
+      {
+        indonesia: "Di Sana",
+        hiragana: "あそこ",
+        romaji: "asoko",
+        svg: `<svg viewBox="0 0 100 100" class="w-24 h-24"><circle cx="50" cy="50" r="10" fill="#3b82f6"/><path d="M50 40 L50 15 M50 15 L40 25 M50 15 L60 25" stroke="#3b82f6" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/><text x="25" y="85" fill="#1e3a8a" font-size="14" font-weight="bold">ASOKO</text></svg>`
+      },
+      {
+        indonesia: "Rumah",
+        hiragana: "いえ",
+        romaji: "ie",
+        svg: `<svg viewBox="0 0 100 100" class="w-24 h-24"><polygon points="50,15 15,45 85,45" fill="#ef4444"/><rect x="25" y="45" width="50" height="40" fill="#fef08a"/><rect x="42" y="55" width="16" height="30" fill="#b45309"/></svg>`
+      },
+      {
+        indonesia: "Kolam",
+        hiragana: "いけ",
+        romaji: "ike",
+        svg: `<svg viewBox="0 0 100 100" class="w-24 h-24"><ellipse cx="50" cy="55" rx="40" ry="25" fill="#38bdf8"/><path d="M20 55 Q35 45 40 55 T75 55" stroke="#0284c7" stroke-width="2" fill="none"/><ellipse cx="30" cy="50" rx="10" ry="4" fill="#10b981"/><ellipse cx="65" cy="60" rx="8" ry="3" fill="#10b981"/></svg>`
+      },
+      {
+        indonesia: "Bohong / Dusta",
+        hiragana: "うそ",
+        romaji: "uso",
+        svg: `<svg viewBox="0 0 100 100" class="w-24 h-24"><circle cx="50" cy="50" r="35" fill="#fef08a"/><path d="M35 45 Q40 35 45 45 M55 45 Q60 35 65 45" stroke="#a16207" stroke-width="3" fill="none"/><path d="M48 50 L85 50" stroke="#f43f5e" stroke-width="6" stroke-linecap="round"/><circle cx="50" cy="50" r="4" fill="#a16207"/></svg>`
+      },
+      {
+        indonesia: "Stasiun",
+        hiragana: "えき",
+        romaji: "eki",
+        svg: `<svg viewBox="0 0 100 100" class="w-24 h-24"><rect x="15" y="30" width="70" height="40" rx="8" fill="#475569"/><rect x="25" y="40" width="12" height="15" fill="#93c5fd"/><rect x="44" y="40" width="12" height="15" fill="#93c5fd"/><rect x="63" y="40" width="12" height="15" fill="#93c5fd"/><rect x="10" y="70" width="80" height="6" fill="#1e293b"/></svg>`
+      },
+      {
+        indonesia: "Makanan Hewan",
+        hiragana: "えさ",
+        romaji: "esa",
+        svg: `<svg viewBox="0 0 100 100" class="w-24 h-24"><path d="M20 75 Q50 45 80 75 Z" fill="#f97316"/><circle cx="45" cy="68" r="4" fill="#7c2d12"/><circle cx="55" cy="60" r="3" fill="#7c2d12"/><circle cx="35" cy="70" r="3" fill="#7c2d12"/><ellipse cx="50" cy="77" rx="35" ry="5" fill="#ea580c"/></svg>`
+      },
+      {
+        indonesia: "Kerang",
+        hiragana: "かい",
+        romaji: "kai",
+        svg: `<svg viewBox="0 0 100 100" class="w-24 h-24"><path d="M50 15 C20 15 20 70 50 85 C80 70 80 15 50 15 Z" fill="#fed7aa" stroke="#c2410c" stroke-width="3"/><path d="M50 15 L50 85 M35 25 Q50 35 65 25 M30 45 Q50 55 70 45" stroke="#c2410c" stroke-width="2" fill="none"/></svg>`
+      },
+      {
+        indonesia: "Membeli",
+        hiragana: "かう",
+        romaji: "kau",
+        svg: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-24 h-24 text-emerald-500"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>`
+      },
+      {
+        indonesia: "Buah Kesemek",
+        hiragana: "かき",
+        romaji: "kaki",
+        svg: `<svg viewBox="0 0 100 100" class="w-24 h-24"><circle cx="50" cy="55" r="32" fill="#ea580c"/><ellipse cx="50" cy="28" rx="15" ry="8" fill="#15803d"/><path d="M50 20 L50 28" stroke="#14532d" stroke-width="4"/></svg>`
+      },
+      {
+        indonesia: "Menulis",
+        hiragana: "かく",
+        romaji: "kaku",
+        svg: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-24 h-24 text-indigo-500"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>`
+      },
+      {
+        indonesia: "Mendengar",
+        hiragana: "きく",
+        romaji: "kiku",
+        svg: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-24 h-24 text-rose-500"><path d="M3 18v-6a9 9 0 0 1 18 0v6"></path><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"></path></svg>`
+      },
+      {
+        indonesia: "Rumput",
+        hiragana: "くさ",
+        romaji: "kusa",
+        svg: `<svg viewBox="0 0 100 100" class="w-24 h-24"><path d="M15 85 Q25 40 40 85 M35 85 Q50 30 55 85 M50 85 Q70 45 85 85" stroke="#22c55e" stroke-width="6" stroke-linecap="round" fill="none"/></svg>`
+      },
+      {
+        indonesia: "Sisir",
+        hiragana: "くし",
+        romaji: "kushi",
+        svg: `<svg viewBox="0 0 100 100" class="w-24 h-24"><rect x="15" y="30" width="70" height="15" rx="4" fill="#a21caf"/><path d="M20 45 V80 M30 45 V80 M40 45 V80 M50 45 V80 M60 45 V80 M70 45 V80 M80 45 V80" stroke="#a21caf" stroke-width="4" stroke-linecap="round"/></svg>`
+      },
+      {
+        indonesia: "Pagi Ini",
+        hiragana: "けさ",
+        romaji: "kesa",
+        svg: `<svg viewBox="0 0 100 100" class="w-24 h-24"><rect x="15" y="15" width="70" height="70" rx="16" fill="#fef08a"/><circle cx="50" cy="50" r="18" fill="#f97316"/><path d="M50 15v10M50 75v10M15 50h10M75 50h10" stroke="#f97316" stroke-width="4" stroke-linecap="round"/></svg>`
+      },
+      {
+        indonesia: "Menghapus / Padam",
+        hiragana: "けす",
+        romaji: "kesu",
+        svg: `<svg viewBox="0 0 100 100" class="w-24 h-24"><rect x="25" y="25" width="50" height="30" rx="4" fill="#3b82f6" transform="rotate(-15 50 50)"/><rect x="45" y="30" width="30" height="30" rx="4" fill="#ef4444" transform="rotate(-15 50 50)"/></svg>`
+      },
+      {
+        indonesia: "Ikan Koi",
+        hiragana: "こい",
+        romaji: "koi",
+        svg: `<svg viewBox="0 0 100 100" class="w-24 h-24"><path d="M20 50 C35 30 65 30 80 50 C65 70 35 70 20 50 Z" fill="#f97316"/><path d="M80 50 L90 40 M80 50 L90 60" stroke="#f97316" stroke-width="4" stroke-linecap="round"/><circle cx="35" cy="45" r="3" fill="#000"/><path d="M45 42 Q50 35 55 42" stroke="#ea580c" stroke-width="3" fill="none"/></svg>`
+      },
+      {
+        indonesia: "Di Sini",
+        hiragana: "ここ",
+        romaji: "koko",
+        svg: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-24 h-24 text-rose-500"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle></svg>`
+      },
+      {
+        indonesia: "Lumut",
+        hiragana: "こけ",
+        romaji: "koke",
+        svg: `<svg viewBox="0 0 100 100" class="w-24 h-24"><ellipse cx="50" cy="65" rx="35" ry="15" fill="#15803d"/><circle cx="30" cy="55" r="12" fill="#166534"/><circle cx="70" cy="58" r="15" fill="#166534"/></svg>`
+      },
+      {
+        indonesia: "Lereng / Tanjakan",
+        hiragana: "さか",
+        romaji: "saka",
+        svg: `<svg viewBox="0 0 100 100" class="w-24 h-24"><polygon points="15,85 85,85 85,30" fill="#cbd5e1"/><path d="M20 80 L75 40" stroke="#ef4444" stroke-width="5" stroke-linecap="round" fill="none"/><circle cx="75" cy="40" r="4" fill="#ef4444"/></svg>`
+      },
+      {
+        indonesia: "Pertandingan",
+        hiragana: "しあい",
+        romaji: "shiai",
+        svg: `<svg viewBox="0 0 100 100" class="w-24 h-24"><circle cx="30" cy="50" r="15" fill="#ef4444"/><circle cx="70" cy="50" r="15" fill="#3b82f6"/><path d="M40 50 L60 50" stroke="#1e293b" stroke-width="4"/><path d="M45 45 L55 55 M55 45 L45 55" stroke="#1e293b" stroke-width="4"/></svg>`
+      },
+      {
+        indonesia: "Garam",
+        hiragana: "しお",
+        romaji: "shio",
+        svg: `<svg viewBox="0 0 100 100" class="w-24 h-24"><polygon points="30,75 70,75 60,35 40,35" fill="#f1f5f9" stroke="#94a3b8" stroke-width="3"/><path d="M40 35 L40 25 Q50 20 60 25 L60 35" stroke="#94a3b8" stroke-width="3" fill="none"/><text x="43" y="60" fill="#475569" font-size="12" font-weight="bold">SALT</text></svg>`
+      },
+      {
+        indonesia: "Semangka",
+        hiragana: "すいか",
+        romaji: "suika",
+        svg: `<svg viewBox="0 0 100 100" class="w-24 h-24"><path d="M15 50 A35 35 0 0 0 85 50 Z" fill="#ef4444"/><path d="M15 50 A35 35 0 0 0 85 50" stroke="#22c55e" stroke-width="8" fill="none"/><circle cx="35" cy="60" r="2" fill="#000"/><circle cx="50" cy="70" r="2" fill="#000"/><circle cx="65" cy="60" r="2" fill="#000"/></svg>`
+      },
+      {
+        indonesia: "Suka",
+        hiragana: "すき",
+        romaji: "suki",
+        svg: `<svg viewBox="0 0 24 24" fill="currentColor" class="w-24 h-24 text-blue-500"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3z"/></svg>`
+      },
+      {
+        indonesia: "Sedikit",
+        hiragana: "すこし",
+        romaji: "sukoshi",
+        svg: `<svg viewBox="0 0 100 100" class="w-24 h-24"><circle cx="30" cy="50" r="3" fill="#475569"/><circle cx="50" cy="50" r="5" fill="#475569"/><circle cx="70" cy="50" r="8" fill="#475569"/></svg>`
+      },
+      {
+        indonesia: "Sushi",
+        hiragana: "すし",
+        romaji: "sushi",
+        svg: `<svg viewBox="0 0 100 100" class="w-24 h-24"><rect x="25" y="45" width="50" height="25" rx="8" fill="#f8fafc"/><path d="M25 45 C25 35 75 35 75 45 Z" fill="#ef4444"/><rect x="42" y="40" width="16" height="5" fill="#fbbf24"/><rect x="35" y="55" width="30" height="5" fill="#1e293b"/></svg>`
+      },
+      {
+        indonesia: "Dunia",
+        hiragana: "せかい",
+        romaji: "sekai",
+        svg: `<svg viewBox="0 0 100 100" class="w-24 h-24"><circle cx="50" cy="50" r="35" fill="#38bdf8"/><path d="M25 40 Q50 30 75 40 M20 50 H80 M25 60 Q50 70 75 60" stroke="#0284c7" stroke-width="3" fill="none"/><path d="M50 15 A35 35 0 0 0 50 85" stroke="#0284c7" stroke-width="3" fill="none"/></svg>`
+      },
+      {
+        indonesia: "Di Situ",
+        hiragana: "そこ",
+        romaji: "soko",
+        svg: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-24 h-24 text-teal-500"><circle cx="12" cy="12" r="10"></circle><polyline points="12 8 12 12 16 14"></polyline></svg>`
+      }
+    ];
+
+    // Senarai Huruf untuk latihan menulis
+    const practiceCharacters = [
+      { h: 'あ', r: 'a' }, { h: 'い', r: 'i' }, { h: 'う', r: 'u' }, { h: 'え', r: 'e' }, { h: 'お', r: 'o' },
+      { h: 'か', r: 'ka' }, { h: 'き', r: 'ki' }, { h: 'く', r: 'ku' }, { h: 'け', r: 'ke' }, { h: 'こ', r: 'ko' },
+      { h: 'さ', r: 'sa' }, { h: 'し', r: 'shi' }, { h: 'す', r: 'su' }, { h: 'せ', r: 'se' }, { h: 'そ', r: 'so' }
+    ];
+
+    let showRomajiState = false;
+    let currentPracticeChar = 'あ';
+
+    // INISIALISASI
+    window.addEventListener('DOMContentLoaded', () => {
+      // Pasang ikon Lucide
+      lucide.createIcons();
+      
+      // Papar kad imbas mula-mula
+      renderFlashcards();
+      
+      // Papar senarai huruf latihan
+      renderPracticeList();
+      
+      // Mulakan Canvas
+      initCanvas();
+    });
+
+    // FUNGSI TUKAR TAB
+    function switchTab(tabId) {
+      // Sembunyikan semua tab
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('block'));
+      
+      // Tunjukkan tab terpilih
+      const targetSection = document.getElementById(`section-${tabId}`);
+      if (targetSection) {
+        targetSection.classList.remove('hidden');
+        targetSection.classList.add('block');
+      }
+
+      // Kemas kini gaya butang tab aktif
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('bg-white', 'text-slate-900', 'shadow-sm');
+        btn.classList.add('text-slate-600', 'hover:text-slate-900');
+      });
+
+      const activeBtn = document.getElementById(`tab-${tabId}`);
+      if (activeBtn) {
+        activeBtn.classList.remove('text-slate-600', 'hover:text-slate-900');
+        activeBtn.classList.add('bg-white', 'text-slate-900', 'shadow-sm');
+      }
+
+      // Khusus jika membuka tab melukis, betulkan semula saiz kanvas
+      if (tabId === 'practice') {
+        setTimeout(clearCanvas, 100);
+      }
+    }
+
+    // FUNGSI SEBUTAN (Speech Synthesis)
+    function speakText(text) {
+      if ('speechSynthesis' in window) {
+        // Hentikan suara sedia ada jika sedang bermain
+        window.speechSynthesis.cancel();
+        
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'ja-JP';
+        utterance.rate = 0.8; // Sedikit perlahan untuk pembelajaran yang jelas
+        
+        // Cuba dapatkan suara wanita Jepun untuk kejelasan optimum
+        const voices = window.speechSynthesis.getVoices();
+        const jpnVoice = voices.find(voice => voice.lang.includes('JP'));
+        if (jpnVoice) {
+          utterance.voice = jpnVoice;
+        }
+        
+        window.speechSynthesis.speak(utterance);
+      } else {
+        console.warn("Sintesis ucapan tidak disokong pada pelayar ini.");
+      }
+    }
+
+    // FUNGSI PENJANAAN KAD IMBAS
+    function renderFlashcards() {
+      const grid = document.getElementById('flashcards-grid');
+      grid.innerHTML = '';
+
+      vocabulary.forEach((item, index) => {
+        const card = document.createElement('div');
+        card.className = "bg-white border border-slate-200 rounded-3xl p-6 flex flex-col items-center justify-between shadow-sm hover:shadow-md hover:border-slate-300 transition duration-300 relative group overflow-hidden";
+        
+        card.innerHTML = `
+          <!-- Bahagian Maksud/Arti -->
+          <div class="text-center w-full border-b border-slate-100 pb-4 mb-4">
+            <span class="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-1">Maksud</span>
+            <span class="text-lg font-bold text-slate-900 tracking-tight">${item.indonesia}</span>
+          </div>
+
+          <!-- Bahagian Ilustrasi SVG -->
+          <div class="my-4 transform group-hover:scale-105 transition duration-300 w-28 h-28 flex items-center justify-center">
+            ${item.svg}
+          </div>
+
+          <!-- Bahagian Hiragana & Butang Dengar -->
+          <div class="text-center w-full border-t border-slate-100 pt-4 mt-4 flex flex-col items-center">
+            <span class="japanese-text text-3xl font-extrabold text-slate-900 tracking-wider">${item.hiragana}</span>
+            <span class="romaji-label text-sm font-semibold text-slate-400 mt-1 transition-opacity duration-300 ${showRomajiState ? 'opacity-100' : 'opacity-0 h-0 overflow-hidden'}">[ ${item.romaji} ]</span>
+            
+            <button onclick="speakText('${item.hiragana}')" class="mt-4 p-2.5 bg-slate-50 hover:bg-rose-50 text-slate-500 hover:text-rose-600 rounded-2xl transition duration-200 active:scale-95 flex items-center gap-1.5 text-xs font-bold">
+              <i data-lucide="volume-2" class="w-4 h-4"></i> Dengar Sebutan
+            </button>
+          </div>
+        `;
+        
+        grid.appendChild(card);
+      });
+      lucide.createIcons();
+    }
+
+    // FUNGSI TUKAR STATS PAPAR ROMAJI
+    function toggleRomaji() {
+      showRomajiState = !showRomajiState;
+      const btn = document.getElementById('btn-romaji');
+      if (showRomajiState) {
+        btn.innerHTML = `<i data-lucide="eye-off" class="w-4 h-4"></i> Sembunyi Romaji`;
+        btn.classList.add('bg-slate-100');
+      } else {
+        btn.innerHTML = `<i data-lucide="eye" class="w-4 h-4"></i> Tunjuk Romaji`;
+        btn.classList.remove('bg-slate-100');
+      }
+      renderFlashcards();
+    }
+
+    // FUNGSI SEBUT SEMUA KAD SATU PER SATU
+    function togglePlayAll() {
+      let index = 0;
+      function playNext() {
+        if (index < vocabulary.length) {
+          speakText(vocabulary[index].hiragana);
+          // Serlahkan kad secara visual
+          const cards = document.getElementById('flashcards-grid').children;
+          Array.from(cards).forEach(c => c.classList.remove('ring-4', 'ring-rose-500/20'));
+          cards[index].classList.add('ring-4', 'ring-rose-500/20');
+          cards[index].scrollIntoView({ behavior: 'smooth', block: 'center' });
+          
+          index++;
+          setTimeout(playNext, 1800);
+        } else {
+          // Buang serlahan setelah tamat
+          const cards = document.getElementById('flashcards-grid').children;
+          Array.from(cards).forEach(c => c.classList.remove('ring-4', 'ring-rose-500/20'));
+        }
+      }
+      playNext();
+    }
+
+
+    // ==========================================
+    // LOGIK LATIHAN MENULIS (TAB 3)
+    // ==========================================
+    let canvas, ctx, isDrawing = false;
+
+    function renderPracticeList() {
+      const listContainer = document.getElementById('practice-char-list');
+      listContainer.innerHTML = '';
+
+      practiceCharacters.forEach(item => {
+        const btn = document.createElement('button');
+        btn.onclick = () => selectPracticeChar(item.h, item.r);
+        btn.id = `practice-char-${item.h}`;
+        btn.className = `practice-btn p-3 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl flex flex-col items-center justify-center transition active:scale-95 ${item.h === currentPracticeChar ? 'bg-rose-50 border-rose-300 ring-2 ring-rose-300/20' : ''}`;
+        
+        btn.innerHTML = `
+          <span class="japanese-text text-xl font-bold text-slate-800">${item.h}</span>
+          <span class="text-xxs font-semibold text-slate-400 uppercase tracking-widest mt-0.5">${item.r}</span>
+        `;
+        listContainer.appendChild(btn);
+      });
+    }
+
+    function selectPracticeChar(char, romaji) {
+      currentPracticeChar = char;
+      
+      // Kemas kini hiasan aktif
+      document.querySelectorAll('.practice-btn').forEach(btn => {
+        btn.classList.remove('bg-rose-50', 'border-rose-300', 'ring-2', 'ring-rose-300/20');
+        btn.classList.add('bg-slate-50', 'border-slate-200');
+      });
+      const activeBtn = document.getElementById(`practice-char-${char}`);
+      if (activeBtn) {
+        activeBtn.classList.remove('bg-slate-50', 'border-slate-200');
+        activeBtn.classList.add('bg-rose-50', 'border-rose-300', 'ring-2', 'ring-rose-300/20');
+      }
+
+      // Tukar panduan huruf di belakang kanvas
+      document.getElementById('canvas-guide-char').innerText = char;
+      document.getElementById('current-practice-char-label').innerText = `${char} (${romaji})`;
+      
+      clearCanvas();
+      speakText(char);
+    }
+
+    function initCanvas() {
+      canvas = document.getElementById('writing-canvas');
+      ctx = canvas.getContext('2d');
+      
+      // Konfigurasi garisan lukis
+      ctx.strokeStyle = '#4f46e5'; // Indigo color
+      ctx.lineWidth = 10;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+
+      // Sokongan Input Tetikus (Mouse)
+      canvas.addEventListener('mousedown', startDrawing);
+      canvas.addEventListener('mousemove', draw);
+      canvas.addEventListener('mouseup', stopDrawing);
+      canvas.addEventListener('mouseout', stopDrawing);
+
+      // Sokongan Peranti Skrin Sentuh (Touch Screen)
+      canvas.addEventListener('touchstart', (e) => {
+        const touch = e.touches[0];
+        const rect = canvas.getBoundingClientRect();
+        startDrawing({
+          clientX: touch.clientX,
+          clientY: touch.clientY
+        });
+        e.preventDefault();
+      });
+      
+      canvas.addEventListener('touchmove', (e) => {
+        const touch = e.touches[0];
+        draw({
+          clientX: touch.clientX,
+          clientY: touch.clientY
+        });
+        e.preventDefault();
+      });
+      
+      canvas.addEventListener('touchend', stopDrawing);
+    }
+
+    function getMousePos(e) {
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
+      return {
+        x: (e.clientX - rect.left) * scaleX,
+        y: (e.clientY - rect.top) * scaleY
+      };
+    }
+
+    function startDrawing(e) {
+      isDrawing = true;
+      const pos = getMousePos(e);
+      ctx.beginPath();
+      ctx.moveTo(pos.x, pos.y);
+    }
+
+    function draw(e) {
+      if (!isDrawing) return;
+      const pos = getMousePos(e);
+      ctx.lineTo(pos.x, pos.y);
+      ctx.stroke();
+    }
+
+    function stopDrawing() {
+      isDrawing = false;
+    }
+
+    function clearCanvas() {
+      if (ctx && canvas) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+    }
+
+
+    // ==========================================
+    // LOGIK KUIZ INTERAKTIF (TAB 4)
+    // ==========================================
+    let quizData = [];
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let answerSelected = false;
+
+    function startQuiz() {
+      // Sediakan soalan secara rawak daripada kosa kata
+      quizData = [...vocabulary].sort(() => 0.5 - Math.random()).slice(0, 10);
+      currentQuestionIndex = 0;
+      score = 0;
+      
+      document.getElementById('quiz-start-screen').classList.add('hidden');
+      document.getElementById('quiz-result-screen').classList.add('hidden');
+      document.getElementById('quiz-play-screen').classList.remove('hidden');
+
+      showQuestion();
+    }
+
+    function showQuestion() {
+      answerSelected = false;
+      document.getElementById('btn-next-question').disabled = true;
+      
+      const currentItem = quizData[currentQuestionIndex];
+      
+      // Papar soalan
+      document.getElementById('quiz-question-num').innerText = currentQuestionIndex + 1;
+      document.getElementById('quiz-score-val').innerText = score;
+      document.getElementById('quiz-hiragana-word').innerText = currentItem.hiragana;
+      document.getElementById('quiz-romaji-word').innerText = `[ ${currentItem.romaji} ]`;
+      document.getElementById('quiz-svg-container').innerHTML = currentItem.svg;
+
+      // Jana Pilihan Jawapan (1 Betul, 3 Rawak)
+      let options = [currentItem.indonesia];
+      const otherOptions = vocabulary
+        .filter(v => v.indonesia !== currentItem.indonesia)
+        .map(v => v.indonesia);
+      
+      // Ambil 3 pilihan lain secara rawak
+      const shuffledOthers = otherOptions.sort(() => 0.5 - Math.random()).slice(0, 3);
+      options = [...options, ...shuffledOthers].sort(() => 0.5 - Math.random());
+
+      const optionsGrid = document.getElementById('quiz-options-grid');
+      optionsGrid.innerHTML = '';
+
+      options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.onclick = () => selectAnswer(btn, opt, currentItem.indonesia);
+        btn.className = "quiz-opt-btn w-full p-4 text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-2xl text-center font-semibold transition active:scale-98";
+        btn.innerText = opt;
+        optionsGrid.appendChild(btn);
+      });
+
+      // Sebut perkataan secara automatik sebagai petunjuk bunyi tambahan!
+      speakText(currentItem.hiragana);
+    }
+
+    function selectAnswer(selectedBtn, selectedOption, correctOption) {
+      if (answerSelected) return; // Kunci setelah jawapan dipilih
+      answerSelected = true;
+
+      const buttons = document.querySelectorAll('.quiz-opt-btn');
+      
+      buttons.forEach(btn => {
+        btn.disabled = true;
+        // Tandakan jawapan betul yang sebenar dengan warna hijau
+        if (btn.innerText === correctOption) {
+          btn.classList.remove('bg-white', 'border-slate-200');
+          btn.classList.add('bg-emerald-50', 'border-emerald-500', 'text-emerald-700', 'ring-2', 'ring-emerald-200');
+        }
+      });
+
+      if (selectedOption === correctOption) {
+        // Jawapan Betul!
+        score += 10;
+        document.getElementById('quiz-score-val').innerText = score;
+        selectedBtn.classList.add('bg-emerald-500', 'text-white');
+      } else {
+        // Jawapan Salah!
+        selectedBtn.classList.remove('bg-white', 'border-slate-200');
+        selectedBtn.classList.add('bg-rose-50', 'border-rose-500', 'text-rose-700', 'ring-2', 'ring-rose-200');
+      }
+
+      document.getElementById('btn-next-question').disabled = false;
+    }
+
+    function nextQuestion() {
+      currentQuestionIndex++;
+      if (currentQuestionIndex < quizData.length) {
+        showQuestion();
+      } else {
+        // Selesai Kuiz
+        showQuizResults();
+      }
+    }
+
+    function showQuizResults() {
+      document.getElementById('quiz-play-screen').classList.add('hidden');
+      document.getElementById('quiz-result-screen').classList.remove('hidden');
+      
+      const finalScore = (score / (quizData.length * 10)) * 100;
+      document.getElementById('final-score-text').innerText = finalScore;
+    }
+  </script>
+</body>
+</html>
